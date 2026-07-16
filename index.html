@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>婚宴座位查詢</title>
+<style>
+:root {
+  --bg:#f7f1df; --card:#fffdf7; --ink:#2d2418; --muted:#776b59;
+  --gold:#9b7a35; --line:#dfd1af; --left:#b9d8ff; --mid:#ccefc8; --right:#ffc6d2;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;background:
+radial-gradient(circle at top,#fffaf0 0,#f5ecd7 60%,#eadbbd 100%);color:var(--ink);min-height:100vh}
+.wrap{max-width:760px;margin:auto;padding:24px 16px 48px}
+.hero{text-align:center;padding:20px 8px}
+.hero h1{font-family:Georgia,"Noto Serif TC",serif;font-size:clamp(30px,8vw,48px);margin:0 0 8px}
+.hero p{margin:0;color:var(--muted);line-height:1.6}
+.stage{margin:18px auto 14px;max-width:520px;border:2px solid #72562c;background:#291d16;color:#f7e4ad;border-radius:18px 18px 8px 8px;padding:13px;text-align:center;font-weight:800;letter-spacing:.12em}
+.searchbox{position:relative;background:rgba(255,253,247,.9);border:1px solid var(--line);padding:14px;border-radius:18px;box-shadow:0 10px 30px rgba(63,44,17,.12)}
+input{width:100%;font-size:20px;padding:16px 50px 16px 16px;border:2px solid #b79a60;border-radius:14px;background:#fff;color:var(--ink);outline:none}
+input:focus{border-color:#715329;box-shadow:0 0 0 4px rgba(155,122,53,.15)}
+button.clear{position:absolute;right:25px;top:27px;border:0;background:transparent;font-size:24px;cursor:pointer;color:#8d806b}
+.hint{font-size:13px;color:var(--muted);margin:10px 3px 0}
+.suggestions{display:none;margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.suggestions button{display:block;width:100%;border:0;border-bottom:1px solid #eee6d6;background:#fff;padding:12px 14px;text-align:left;font-size:16px;cursor:pointer}
+.suggestions button:last-child{border-bottom:0}
+.suggestions button:hover{background:#faf4e8}
+.results{margin-top:18px;display:grid;gap:14px}
+.card{background:rgba(255,253,247,.94);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 8px 25px rgba(63,44,17,.09)}
+.name{font-size:15px;color:var(--muted);margin-bottom:6px}
+.table-name{font-size:30px;font-weight:900;line-height:1.25;margin-bottom:12px}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;border-radius:999px;padding:8px 12px;font-weight:800}
+.badge.left{background:var(--left)} .badge.mid{background:var(--mid)} .badge.right{background:var(--right)}
+.map{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px}
+.zone{border:2px solid transparent;border-radius:12px;padding:12px 5px;text-align:center;font-weight:800;opacity:.38}
+.zone.left{background:var(--left)} .zone.mid{background:var(--mid)} .zone.right{background:var(--right)}
+.zone.active{opacity:1;border-color:#3e3323;transform:translateY(-2px)}
+.empty{text-align:center;padding:28px 18px;color:var(--muted)}
+.note{margin-top:22px;font-size:13px;line-height:1.65;color:var(--muted);background:rgba(255,255,255,.5);padding:14px;border-radius:12px}
+footer{text-align:center;margin-top:24px;color:#8a7a62;font-size:12px}
+@media(max-width:420px){.table-name{font-size:26px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <h1>婚宴座位查詢</h1>
+    <p>輸入姓名，即可查看桌名與座位方向</p>
+  </section>
+  <div class="stage">魔法部・主舞台</div>
+
+  <section class="searchbox">
+    <input id="q" autocomplete="off" placeholder="請輸入姓名，例如：李柏緯" aria-label="姓名">
+    <button class="clear" id="clear" aria-label="清除">×</button>
+    <div class="hint">可只輸入部分姓名；英文姓名不分大小寫。</div>
+    <div class="suggestions" id="suggestions"></div>
+  </section>
+
+  <section class="results" id="results">
+    <div class="card empty">請先輸入賓客姓名。</div>
+  </section>
+
+  <div class="note">
+    <b>桌次規則：</b>以賓客面向「魔法部／主舞台」為準，顯示左邊、中間或右邊；
+    各區桌次依新人進場方向編號：最靠近入口為第 1 桌，再一路往主舞台方向遞增。查詢結果同時保留桌名，方便現場帶位。
+  </div>
+  <footer>Wedding Seating Finder</footer>
+</main>
+
+<script>
+const tables = [{"table": "斜角巷", "zone": "左邊", "zoneNo": 1, "people": ["梅賢治（主持人）", "鄭婕妤", "溫智婷", "李佳殷", "林庭儀", "陳映彤", "林于坪", "王捷", "戴鈺婷", "戴鈺芸"]}, {"table": "帕特奇大釜店", "zone": "左邊", "zoneNo": 2, "people": ["黃雅甄", "林振男", "廖啟鈞", "黃祠妗", "胡詔涵", "張閔翔", "蔡佳恩", "李晶", "蔡馥宇", "蔡馥宇女（兒童椅）"]}, {"table": "華麗與污痕書店", "zone": "左邊", "zoneNo": 3, "people": ["黃紀惟", "曾馨儀", "魏嘉徵（13:00）", "郭于瑄（伴娘）", "張慈庭", "劉泰億", "劉映辰", "黃子恆", "黃彥翔", "黃政皓"]}, {"table": "優質魁地奇用品商店", "zone": "左邊", "zoneNo": 4, "people": ["黃美綸", "陳柏儒", "王劭予", "譚湘陵", "曹仲偉", "吳欣樺", "李玟頤", "陳奕岑", "李東儒", "楊沛茬"]}, {"table": "古靈閣", "zone": "左邊", "zoneNo": 5, "people": ["李晨瑜（伴娘）", "張薰云（拍立得）", "田育全", "饒祐睿", "陳冠閔", "李冠緯", "趙子元", "李兆庭", "李季陽", "許安村"]}, {"table": "衛斯理兄弟巫師法寶店", "zone": "左邊", "zoneNo": 6, "people": ["黃子茵", "Jade", "何安婕", "侯宛妤", "闕嘉瑢", "陳薇淇", "李采儒", "李采儒男", "王紫彤", "邵靖壹"]}, {"table": "破釜酒吧", "zone": "左邊", "zoneNo": 7, "people": ["毛靖雯", "毛靖雯男友", "林沂萱", "林沂萱男友", "廖婉淳", "姚乃筠", "陳柔妤", "李欣玫", "鄭琪玟", "高玉君"]}, {"table": "咿啦貓頭鷹商場", "zone": "左邊", "zoneNo": 8, "people": ["王藝樺", "尹芊雅", "陳穎君", "楊子頡", "詹皓安", "廖冠周", "林韋辰", "楊宗開", "張乃有", "林芳宇"]}, {"table": "奧利凡德魔杖店", "zone": "左邊", "zoneNo": 9, "people": ["陳世斌", "曾文", "張博雅", "蔡漢霖", "蕭宜勳", "陳俊維", "馬曉楠", "簡君芳", "蔡宇傑", "林芷亘"]}, {"table": "9¾月台", "zone": "左邊", "zoneNo": 10, "people": ["王又賢", "陳妍頻", "謝青鈺（香水吧）", "Yura", "許家豪", "黃芷琳", "顏脩樺", "林奕君", "黃貿鍾", "李昕（香水吧）"]}, {"table": "高錐客洞", "zone": "中間", "zoneNo": 2, "people": ["蔡志宏", "李晴華", "蔡宜蓁", "蔡志盛", "王如吟", "蔡翔宇", "蔡志龍", "薛壹華", "蔡佳妤", "蔡欣彤"]}, {"table": "鳳凰會總部", "zone": "中間", "zoneNo": 4, "people": ["蔡志賢", "蔡承祐（12:30）", "蔡良德", "王月娥", "林彥辰（總召）", "蘇旻君（總召）", "林筱萱（收禮）", "林胤佐", "李柏緯（招待）", "陳秀卿"]}, {"table": "國王十字車站", "zone": "中間", "zoneNo": 6, "people": ["林志尚", "鳳嬌", "林欣怡（收禮）", "林欣怡家人 1", "林欣怡家人 2", "林欣怡家人 3", "林欣怡家人 4", "吳美霞", "林志郁（坐主桌）", "陳秀卿（坐主桌）"]}, {"table": "貝殼居", "zone": "中間", "zoneNo": 8, "people": ["李春玉", "鍾天翔", "葉富美", "鍾沛妘", "鍾沛妤", "李文清", "鄭兆霖"]}];
+const entries = tables.flatMap(t => t.people.map(person => ({...t, person})));
+
+function normalize(s) {
+  return (s || "")
+    .toLowerCase()
+    .replace(/[\s　]/g,"")
+    .replace(/[（）()]/g,"")
+    .replace(/主持人|伴娘|拍立得|兒童椅|香水吧|收禮|總召|招待|坐主桌|13:00|12:30/g,"");
+}
+function zoneClass(z) { return z === "左邊" ? "left" : z === "中間" ? "mid" : "right"; }
+function esc(s) { return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+const q = document.getElementById("q");
+const results = document.getElementById("results");
+const suggestions = document.getElementById("suggestions");
+
+function findMatches(value) {
+  const n = normalize(value);
+  if (!n) return [];
+  return entries.filter(e => normalize(e.person).includes(n));
+}
+function render(value) {
+  const matches = findMatches(value);
+  if (!normalize(value)) {
+    results.innerHTML = '<div class="card empty">請先輸入賓客姓名。</div>';
+    return;
+  }
+  if (!matches.length) {
+    results.innerHTML = '<div class="card empty"><b>查無符合姓名</b><br>請檢查是否有同音字、空格或改輸入部分姓名。</div>';
+    return;
+  }
+  results.innerHTML = matches.map(e => `
+    <article class="card">
+      <div class="name">查詢姓名：${esc(e.person)}</div>
+      <div class="table-name">${esc(e.table)}</div>
+      <div class="badges">
+        <span class="badge ${zoneClass(e.zone)}">面向舞台：${e.zone}</span>
+        <span class="badge">第 ${e.zoneNo} 桌</span>
+      </div>
+      <div class="map" aria-label="座位方向示意">
+        <div class="zone left ${e.zone==="左邊"?"active":""}">左邊</div>
+        <div class="zone mid ${e.zone==="中間"?"active":""}">中間</div>
+        <div class="zone right ${e.zone==="右邊"?"active":""}">右邊</div>
+      </div>
+    </article>`).join("");
+}
+function updateSuggestions(value) {
+  const matches = findMatches(value).slice(0,6);
+  if (!normalize(value) || !matches.length) {
+    suggestions.style.display = "none"; suggestions.innerHTML = ""; return;
+  }
+  suggestions.innerHTML = matches.map(e =>
+    `<button type="button" data-name="${esc(e.person)}">${esc(e.person)}｜${esc(e.table)}</button>`
+  ).join("");
+  suggestions.style.display = "block";
+}
+q.addEventListener("input", e => { updateSuggestions(e.target.value); render(e.target.value); });
+suggestions.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  q.value = b.dataset.name; suggestions.style.display = "none"; render(q.value);
+});
+document.getElementById("clear").addEventListener("click", () => {
+  q.value=""; suggestions.style.display="none"; render(""); q.focus();
+});
+document.addEventListener("click", e => {
+  if (!e.target.closest(".searchbox")) suggestions.style.display="none";
+});
+</script>
+</body>
+</html>
