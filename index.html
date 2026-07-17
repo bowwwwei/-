@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#291d16">
 <title>婚宴座位查詢</title>
 <style>
 :root {
@@ -13,32 +14,34 @@
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;background:
 radial-gradient(circle at top,#fffaf0 0,#f5ecd7 60%,#eadbbd 100%);color:var(--ink);min-height:100vh}
 .wrap{max-width:760px;margin:auto;padding:24px 16px 48px}
-.hero{text-align:center;padding:20px 8px}
+.hero{text-align:center;padding:18px 8px}
 .hero h1{font-family:Georgia,"Noto Serif TC",serif;font-size:clamp(30px,8vw,48px);margin:0 0 8px}
 .hero p{margin:0;color:var(--muted);line-height:1.6}
 .stage{margin:18px auto 14px;max-width:520px;border:2px solid #72562c;background:#291d16;color:#f7e4ad;border-radius:18px 18px 8px 8px;padding:13px;text-align:center;font-weight:800;letter-spacing:.12em}
-.searchbox{position:relative;background:rgba(255,253,247,.9);border:1px solid var(--line);padding:14px;border-radius:18px;box-shadow:0 10px 30px rgba(63,44,17,.12)}
+.searchbox{position:relative;background:rgba(255,253,247,.92);border:1px solid var(--line);padding:14px;border-radius:18px;box-shadow:0 10px 30px rgba(63,44,17,.12)}
 input{width:100%;font-size:20px;padding:16px 50px 16px 16px;border:2px solid #b79a60;border-radius:14px;background:#fff;color:var(--ink);outline:none}
 input:focus{border-color:#715329;box-shadow:0 0 0 4px rgba(155,122,53,.15)}
-button.clear{position:absolute;right:25px;top:27px;border:0;background:transparent;font-size:24px;cursor:pointer;color:#8d806b}
+.clear{position:absolute;right:25px;top:27px;border:0;background:transparent;font-size:24px;cursor:pointer;color:#8d806b}
 .hint{font-size:13px;color:var(--muted);margin:10px 3px 0}
 .suggestions{display:none;margin-top:8px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
 .suggestions button{display:block;width:100%;border:0;border-bottom:1px solid #eee6d6;background:#fff;padding:12px 14px;text-align:left;font-size:16px;cursor:pointer}
 .suggestions button:last-child{border-bottom:0}
-.suggestions button:hover{background:#faf4e8}
 .results{margin-top:18px;display:grid;gap:14px}
-.card{background:rgba(255,253,247,.94);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 8px 25px rgba(63,44,17,.09)}
+.card{background:rgba(255,253,247,.95);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 8px 25px rgba(63,44,17,.09)}
 .name{font-size:15px;color:var(--muted);margin-bottom:6px}
-.table-name{font-size:30px;font-weight:900;line-height:1.25;margin-bottom:12px}
+.table-name{font-size:30px;font-weight:900;line-height:1.25;margin-bottom:6px}
+.group{font-size:14px;color:var(--muted);margin-bottom:14px}
 .badges{display:flex;gap:8px;flex-wrap:wrap}
-.badge{display:inline-flex;align-items:center;border-radius:999px;padding:8px 12px;font-weight:800}
+.badge{display:inline-flex;align-items:center;border-radius:999px;padding:8px 12px;font-weight:800;background:#eee6d6}
 .badge.left{background:var(--left)} .badge.mid{background:var(--mid)} .badge.right{background:var(--right)}
+.position{margin-top:14px;padding:13px;border-radius:12px;background:#f8f1e2;line-height:1.7}
+.position strong{font-size:18px}
 .map{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px}
-.zone{border:2px solid transparent;border-radius:12px;padding:12px 5px;text-align:center;font-weight:800;opacity:.38}
+.zone{border:2px solid transparent;border-radius:12px;padding:12px 5px;text-align:center;font-weight:800;opacity:.35}
 .zone.left{background:var(--left)} .zone.mid{background:var(--mid)} .zone.right{background:var(--right)}
 .zone.active{opacity:1;border-color:#3e3323;transform:translateY(-2px)}
 .empty{text-align:center;padding:28px 18px;color:var(--muted)}
-.note{margin-top:22px;font-size:13px;line-height:1.65;color:var(--muted);background:rgba(255,255,255,.5);padding:14px;border-radius:12px}
+.note{margin-top:22px;font-size:13px;line-height:1.65;color:var(--muted);background:rgba(255,255,255,.55);padding:14px;border-radius:12px}
 footer{text-align:center;margin-top:24px;color:#8a7a62;font-size:12px}
 @media(max-width:420px){.table-name{font-size:26px}}
 </style>
@@ -47,14 +50,14 @@ footer{text-align:center;margin-top:24px;color:#8a7a62;font-size:12px}
 <main class="wrap">
   <section class="hero">
     <h1>婚宴座位查詢</h1>
-    <p>輸入姓名，即可查看桌名與座位方向</p>
+    <p>輸入姓名，即可查看桌名與進場方向</p>
   </section>
   <div class="stage">魔法部・主舞台</div>
 
   <section class="searchbox">
     <input id="q" autocomplete="off" placeholder="請輸入姓名，例如：李柏緯" aria-label="姓名">
     <button class="clear" id="clear" aria-label="清除">×</button>
-    <div class="hint">可只輸入部分姓名；英文姓名不分大小寫。</div>
+    <div class="hint">可輸入部分姓名；英文姓名不分大小寫。</div>
     <div class="suggestions" id="suggestions"></div>
   </section>
 
@@ -63,25 +66,23 @@ footer{text-align:center;margin-top:24px;color:#8a7a62;font-size:12px}
   </section>
 
   <div class="note">
-    <b>桌次規則：</b>以賓客面向「魔法部／主舞台」為準，顯示左邊、中間或右邊；
-    各區桌次依新人進場方向編號：最靠近入口為第 1 桌，再一路往主舞台方向遞增。查詢結果同時保留桌名，方便現場帶位。
+    <b>桌次說明：</b>以賓客從會場入口進場、面向魔法部／主舞台的方向計算，每一區最靠近入口的位置為第 1 桌。
   </div>
   <footer>Wedding Seating Finder</footer>
 </main>
 
 <script>
-const tables = [{"table": "斜角巷", "zone": "左邊", "zoneNo": 1, "people": ["梅賢治（主持人）", "鄭婕妤", "溫智婷", "李佳殷", "林庭儀", "陳映彤", "林于坪", "王捷", "戴鈺婷", "戴鈺芸"]}, {"table": "帕特奇大釜店", "zone": "左邊", "zoneNo": 2, "people": ["黃雅甄", "林振男", "廖啟鈞", "黃祠妗", "胡詔涵", "張閔翔", "蔡佳恩", "李晶", "蔡馥宇", "蔡馥宇女（兒童椅）"]}, {"table": "華麗與污痕書店", "zone": "左邊", "zoneNo": 3, "people": ["黃紀惟", "曾馨儀", "魏嘉徵（13:00）", "郭于瑄（伴娘）", "張慈庭", "劉泰億", "劉映辰", "黃子恆", "黃彥翔", "黃政皓"]}, {"table": "優質魁地奇用品商店", "zone": "左邊", "zoneNo": 4, "people": ["黃美綸", "陳柏儒", "王劭予", "譚湘陵", "曹仲偉", "吳欣樺", "李玟頤", "陳奕岑", "李東儒", "楊沛茬"]}, {"table": "古靈閣", "zone": "左邊", "zoneNo": 5, "people": ["李晨瑜（伴娘）", "張薰云（拍立得）", "田育全", "饒祐睿", "陳冠閔", "李冠緯", "趙子元", "李兆庭", "李季陽", "許安村"]}, {"table": "衛斯理兄弟巫師法寶店", "zone": "左邊", "zoneNo": 6, "people": ["黃子茵", "Jade", "何安婕", "侯宛妤", "闕嘉瑢", "陳薇淇", "李采儒", "李采儒男", "王紫彤", "邵靖壹"]}, {"table": "破釜酒吧", "zone": "左邊", "zoneNo": 7, "people": ["毛靖雯", "毛靖雯男友", "林沂萱", "林沂萱男友", "廖婉淳", "姚乃筠", "陳柔妤", "李欣玫", "鄭琪玟", "高玉君"]}, {"table": "咿啦貓頭鷹商場", "zone": "左邊", "zoneNo": 8, "people": ["王藝樺", "尹芊雅", "陳穎君", "楊子頡", "詹皓安", "廖冠周", "林韋辰", "楊宗開", "張乃有", "林芳宇"]}, {"table": "奧利凡德魔杖店", "zone": "左邊", "zoneNo": 9, "people": ["陳世斌", "曾文", "張博雅", "蔡漢霖", "蕭宜勳", "陳俊維", "馬曉楠", "簡君芳", "蔡宇傑", "林芷亘"]}, {"table": "9¾月台", "zone": "左邊", "zoneNo": 10, "people": ["王又賢", "陳妍頻", "謝青鈺（香水吧）", "Yura", "許家豪", "黃芷琳", "顏脩樺", "林奕君", "黃貿鍾", "李昕（香水吧）"]}, {"table": "高錐客洞", "zone": "中間", "zoneNo": 2, "people": ["蔡志宏", "李晴華", "蔡宜蓁", "蔡志盛", "王如吟", "蔡翔宇", "蔡志龍", "薛壹華", "蔡佳妤", "蔡欣彤"]}, {"table": "鳳凰會總部", "zone": "中間", "zoneNo": 4, "people": ["蔡志賢", "蔡承祐（12:30）", "蔡良德", "王月娥", "林彥辰（總召）", "蘇旻君（總召）", "林筱萱（收禮）", "林胤佐", "李柏緯（招待）", "陳秀卿"]}, {"table": "國王十字車站", "zone": "中間", "zoneNo": 6, "people": ["林志尚", "鳳嬌", "林欣怡（收禮）", "林欣怡家人 1", "林欣怡家人 2", "林欣怡家人 3", "林欣怡家人 4", "吳美霞", "林志郁（坐主桌）", "陳秀卿（坐主桌）"]}, {"table": "貝殼居", "zone": "中間", "zoneNo": 8, "people": ["李春玉", "鍾天翔", "葉富美", "鍾沛妘", "鍾沛妤", "李文清", "鄭兆霖"]}];
+const tables = [{"officialNo": 1, "table": "斜角巷", "group": "梅", "zone": "左邊", "entryNo": 10, "people": ["梅賢治(主持人)", "鄭婕妤", "溫智婷", "李佳殷", "林庭儀", "陳映彤(東東)", "林于坪", "王捷", "戴鈺婷", "戴鈺芸"]}, {"officialNo": 2, "table": "帕特奇大釜店", "group": "Fan Lab", "zone": "左邊", "entryNo": 9, "people": ["黃雅甄", "林振男", "廖啟鈞", "黃祠妗", "胡詔涵", "張閔翔", "蔡佳恩", "李晶", "蔡馥宇", "蔡馥宇女兒(兒童椅)"]}, {"officialNo": 3, "table": "華麗與污痕書店", "group": "VL Lab/國中同學", "zone": "左邊", "entryNo": 8, "people": ["黃紀惟", "曾馨儀", "魏嘉徵 (1300)", "郭于瑄(伴娘)", "張慈庭", "劉泰億", "劉映辰", "黃子恆", "黃彥翔", "黃政皓"]}, {"officialNo": 4, "table": "優質魁地奇用品商店", "group": "女排/排球", "zone": "左邊", "entryNo": 7, "people": ["黃美綸", "陳柏儒", "王劭予", "譚湘陵", "曹仲偉", "吳欣樺", "李玟頤", "陳奕岑", "李東儒", "楊沛茬"]}, {"officialNo": 5, "table": "古靈閣", "group": "大學同學", "zone": "左邊", "entryNo": 6, "people": ["李晨瑜(伴娘)", "張薰云(拍立得)", "田育全", "饒祐睿", "陳冠閔", "李冠緯", "趙子元", "李兆庭", "李季陽", "許安村"]}, {"officialNo": 6, "table": "衛斯理兄弟巫師法寶店", "group": "農經生工女排", "zone": "左邊", "entryNo": 5, "people": ["黃子茵", "Jade", "何安婕", "侯宛妤", "闕嘉瑢", "陳薇淇", "李采儒(Ruruman)", "李采儒男友", "王紫彤", "邵靖壹"]}, {"officialNo": 7, "table": "破釜酒吧", "group": "高中同學", "zone": "左邊", "entryNo": 4, "people": ["毛靖雯", "毛靖雯男友", "林沂萱", "林沂萱男友", "廖婉淳", "姚乃筠", "陳柔妤", "李欣玫", "鄭琪玟(小玫)", "高玉君"]}, {"officialNo": 8, "table": "咿啦貓頭鷹商場", "group": "UCS", "zone": "左邊", "entryNo": 3, "people": ["王藝樺", "尹芊雅", "陳穎君", "楊子頡", "詹皓安", "廖冠周", "林韋辰", "楊宗開", "張乃有", "林芳宇"]}, {"officialNo": 9, "table": "奧利凡德魔杖店", "group": "Staff/Others", "zone": "左邊", "entryNo": 2, "people": ["陳世斌", "曾文(Will)", "張博雅", "蔡漢霖", "蕭宜勳(Matt)", "陳俊維(史提)", "馬曉楠", "簡君芳", "蔡宇傑", "林芷亘(Jenny)"]}, {"officialNo": 10, "table": "9¾月台", "group": "Staff/Others", "zone": "左邊", "entryNo": 1, "people": ["王又豎", "陳妍頻", "謝青鈺(香水吧)", "Yura", "許家豪(Roy)", "黃芷琳(庾庾)", "顏脩樺", "林奕君(老皮)", "黃貿鍾(目瞅哥)", "李昕(Annie)(香水吧)"]}, {"officialNo": 11, "table": "高錐客洞", "group": "女方家人", "zone": "中間", "entryNo": 11, "people": ["蔡志宏", "李晴華", "蔡宜蓁", "蔡志盛", "王如吟", "蔡翔宇", "蔡志龍", "薛壹華", "蔡佳妤", "蔡欣彤"]}, {"officialNo": 12, "table": "鳳凰會總部", "group": "女方家人", "zone": "中間", "entryNo": 9, "people": ["蔡志賢 (1230)", "蔡承祐 (1230)", "蔡良德", "王月娥", "林彥辰(總召)", "蘇旻君(總召)", "李柏緯(招待)", "巫昌駿", "王哲豪", "范家齊"]}, {"officialNo": 13, "table": "國王十字車站", "group": "女方家人", "zone": "中間", "entryNo": 7, "people": ["林志尚", "鳳嬌", "林欣怡(收禮)", "林欣怡家人", "林欣怡家人", "林欣怡家人", "林欣怡家人", "林曉萱(收禮)", "林胤佐"]}, {"officialNo": 14, "table": "貝殼居", "group": "女方家人", "zone": "中間", "entryNo": 5, "people": ["李春玉", "鍾天翔", "葉富美", "鍾沛妘", "鍾沛妤", "李文清", "鄭兆霖", "鄭兆霖老婆"]}, {"officialNo": 15, "table": "活米村站", "group": "WCLO", "zone": "中間", "entryNo": 12, "people": ["林郁富 (伴郎)", "易倢", "魏小城", "鄭守茜", "蔣明佑", "蔣明佑女友 (Jestine)", "謝政樺", "張修銘", "曾亞瑄"]}, {"officialNo": 16, "table": "蜂蜜公爵", "group": "高中同學", "zone": "中間", "entryNo": 10, "people": ["曾祥哲", "林詩語", "廖彥甄", "施翔瀚", "莊永瑋", "邱彥閔", "林恆道", "張熹喆", "朱晨誠", "潘崇軒"]}, {"officialNo": 17, "table": "三根掃帚", "group": "高中/國中同學", "zone": "中間", "entryNo": 8, "people": ["黃日新", "朱明偉", "羅育成", "葉智竣", "葉蓉", "周彥澄", "程語濤", "簡俊義", "周彥澄女友"]}, {"officialNo": 18, "table": "桑科的惡作劇商店", "group": "大學同學", "zone": "中間", "entryNo": 6, "people": ["董子安", "張嘉恆", "曾永至", "鄭光翔", "張峻豪", "林遠綸", "翁晟睿", "陳冠宏", "陳冠宏女友"]}, {"officialNo": 19, "table": "豬頭酒吧", "group": "大學同學", "zone": "中間", "entryNo": 4, "people": ["李群翊", "東拓也", "蘇鈺崴", "梁祐祥", "林煒幀", "楊靖毅", "徐靖惟", "廖偉全", "林彥廷", "彭威宇"]}, {"officialNo": 20, "table": "密室", "group": "男方 - 爸爸同學", "zone": "中間", "entryNo": 3, "people": ["黃佩玉", "林國選", "王筱玲", "黎萬政", "張培慶", "麥良瑞", "麥政傑", "林進興"]}, {"officialNo": 21, "table": "海格小屋", "group": "男方 - 大旺員工", "zone": "中間", "entryNo": 2, "people": ["許小玫", "許小玫", "許小玫", "許小玫", "許小玫", "彭崧銨", "彭崧銨太太", "李清標", "李清標太太", "古玉蘭"]}, {"officialNo": 22, "table": "船屋", "group": "男方 - 員工 / 爸爸同學", "zone": "中間", "entryNo": 1, "people": ["楊永鉅太太", "楊永鉅", "何采薇", "何采薇男友", "靜美", "彭彥之", "彭彥之女友", "彭俊永", "彭俊永女友", "蕭博文"]}, {"officialNo": 23, "table": "霍格華茲大廳", "group": "男方 - 媽媽", "zone": "右邊", "entryNo": 11, "people": ["古玉娟", "古玉娟", "古清芳", "林志羽", "林志羽女友", "林妤虹男友", "林妤虹", "曾莉莉", "掘田笑里", "簡宸妤"]}, {"officialNo": 24, "table": "校長辦公室", "group": "男方 - 爸爸親戚", "zone": "右邊", "entryNo": 10, "people": ["楊文達", "賴壽梅", "楊文達兒子", "彭瑋婕", "劉利勤", "彭琇媄", "彭瑞恩", "竇書涵", "竇聆甄", "彭兆仁"]}, {"officialNo": 25, "table": "貓頭鷹屋", "group": "男方 - 爸爸親戚", "zone": "右邊", "entryNo": 9, "people": ["李莉", "彭亭玉", "蔡東錡", "蔡諺澤", "黃培浚", "黃培浚", "林麗芬", "彭子洋", "彭子倫", "彭子容"]}, {"officialNo": 26, "table": "萬應室", "group": "男方 - 爸爸親戚", "zone": "右邊", "entryNo": 8, "people": ["高鳳英", "彭秀玲", "陳炯郎", "彭秀雲", "鍾義喜", "陳秀梅", "陳秀梅先生", "彭柏彰", "彭商賢", "彭芸萱", "壬介卿"]}, {"officialNo": 27, "table": "學院交誼廳", "group": "男方 - 爸爸親戚", "zone": "右邊", "entryNo": 7, "people": ["彭吉富", "楊淨心", "彭銘威", "彭壬威", "壬威太太", "彭星銓", "彭日威", "彭日威(女友)", "彭兆立", "彭兆正", "林珊妮"]}, {"officialNo": 28, "table": "變形學教室", "group": "男方 - 爸爸親戚", "zone": "右邊", "entryNo": 6, "people": ["張萁升", "張豆豆", "鐘孟君", "鐘先生", "鐘小孩", "彭秀倩", "陳俊宏", "陳湘媛", "游顯煌", "林桂香"]}, {"officialNo": 29, "table": "魔法史教室", "group": "男方 - 爸爸親戚", "zone": "右邊", "entryNo": 5, "people": ["彭永德", "彭永盛", "彭楚叡", "徐禮文", "徐禮文太太", "彭湶詠", "彭新朋", "彭瑞宏", "彭瑞宏", "彭靖幃"]}, {"officialNo": 30, "table": "魔藥學教室", "group": "男方 - 爸爸親戚", "zone": "右邊", "entryNo": 4, "people": ["林燕美", "彭祖狄", "彭祖狄太太", "彭蕙仙", "陳品儒", "彭蕙蘭", "陳朝德", "彭育傑", "彭育傑太太"]}, {"officialNo": 31, "table": "天文塔", "group": "男方 - 爸爸親戚", "zone": "右邊", "entryNo": 3, "people": ["陳滿妹", "彭兆賢", "彭兆賢太太", "彭文俊", "趙惠娟", "彭景宥", "徐其偉", "湯玉連", "徐志清", "徐志清太太"]}, {"officialNo": 32, "table": "藥草學溫室", "group": "男方 - 爸爸親戚", "zone": "右邊", "entryNo": 2, "people": ["彭文進", "胡瑞鈴", "彭詠嵐", "彭采楓", "彭采嵐", "彭德龍", "Meike", "Lieke", "陳儷心"]}, {"officialNo": 33, "table": "魁地奇球場", "group": "男方 - 爸爸親戚", "zone": "右邊", "entryNo": 1, "people": ["蕭國鴻", "劉品惠", "蕭瀚宇", "蕭瀚威", "洪素惠", "徐慈薇", "廖育賢", "簡亦成", "賴佩玲", "簡妤真"]}];
 const entries = tables.flatMap(t => t.people.map(person => ({...t, person})));
 
 function normalize(s) {
-  return (s || "")
-    .toLowerCase()
+  return (s || "").toLowerCase()
     .replace(/[\s　]/g,"")
     .replace(/[（）()]/g,"")
-    .replace(/主持人|伴娘|拍立得|兒童椅|香水吧|收禮|總召|招待|坐主桌|13:00|12:30/g,"");
+    .replace(/主持人|伴娘|伴郎|拍立得|兒童椅|香水吧|收禮|總召|招待|1230|1300/g,"");
 }
 function zoneClass(z) { return z === "左邊" ? "left" : z === "中間" ? "mid" : "right"; }
-function esc(s) { return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function esc(s) { return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
 const q = document.getElementById("q");
 const results = document.getElementById("results");
@@ -99,16 +100,19 @@ function render(value) {
     return;
   }
   if (!matches.length) {
-    results.innerHTML = '<div class="card empty"><b>查無符合姓名</b><br>請檢查是否有同音字、空格或改輸入部分姓名。</div>';
+    results.innerHTML = '<div class="card empty"><b>查無符合姓名</b><br>請檢查姓名，或改輸入其中一至兩個字。</div>';
     return;
   }
   results.innerHTML = matches.map(e => `
     <article class="card">
       <div class="name">查詢姓名：${esc(e.person)}</div>
       <div class="table-name">${esc(e.table)}</div>
+      ${e.group ? `<div class="group">${esc(e.group)}</div>` : ""}
       <div class="badges">
         <span class="badge ${zoneClass(e.zone)}">面向舞台：${e.zone}</span>
-        <span class="badge">第 ${e.zoneNo} 桌</span>
+      </div>
+      <div class="position">
+        從入口開始數：<strong>${e.zone}第 ${e.entryNo} 桌</strong>
       </div>
       <div class="map" aria-label="座位方向示意">
         <div class="zone left ${e.zone==="左邊"?"active":""}">左邊</div>
@@ -118,7 +122,7 @@ function render(value) {
     </article>`).join("");
 }
 function updateSuggestions(value) {
-  const matches = findMatches(value).slice(0,6);
+  const matches = findMatches(value).slice(0,8);
   if (!normalize(value) || !matches.length) {
     suggestions.style.display = "none"; suggestions.innerHTML = ""; return;
   }
